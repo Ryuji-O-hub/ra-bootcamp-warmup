@@ -1,0 +1,67 @@
+---
+title: "analyze.Rmd"
+output: html_document
+date: "2025-08-12"
+---
+
+課題１.４
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+合計不登校者数の推移表
+
+```{r}
+merged_df |>
+  summarise(sum_abs = sum(absentees)/10000,
+            .by = year) |>
+  round(digits = 2) 
+```
+
+合計不登校者数の推移棒グラフ
+
+```{r}
+merged_df %>%
+  group_by(year) %>%
+  summarise(sum_abs = sum(absentees)/10000) %>%
+  ggplot(aes(x = year, y = sum_abs)) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(breaks = seq(2013,2022,1)) +
+  labs(x = "年度", y = "不登校生徒数(万人)", title = "不登校生徒数の推移") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.4, size = 12),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 11))
+```
+不登校割合の推移
+
+```{r}
+
+proportions<-c(3.7,3.8,4.0,4.2,4.5,5.0,5.3,5.7,7.5,8.6)
+
+merged_df |>
+  group_by(year) |>
+    summarise(sum_prop = (sum(absentees)/sum(students))*100) |>
+  ggplot(aes(x = year, y = sum_prop )) +
+  geom_point() +
+  geom_line() +
+  geom_text(label = proportions, y = proportions + 1) +
+  labs(x = "年度", y = "不登校割合(%)", title = "不登校生徒割合の推移" ) +
+  scale_x_continuous(breaks = seq(2013,2022,1)) +
+  scale_y_continuous(breaks = seq(0,10,2.5)) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.4, size = 12)) +
+  coord_cartesian(ylim = c(0,10))
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

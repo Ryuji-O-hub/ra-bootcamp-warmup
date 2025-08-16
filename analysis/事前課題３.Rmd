@@ -1,0 +1,106 @@
+---
+title: "事前課題３"
+author: "岡本　龍士"
+date: "2025-08-15"
+output: html_document
+---
+Debugging and Improving R code
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Problem 1
+
+```{r}
+
+#if_else関数だとNA値しか返さないので、is.na関数で置き換え
+
+df <- tibble(col1 = sample(c(NA,1),size = 100, replace = TRUE)) |>
+  mutate(
+    is_na = is.na(col1)
+  )
+```
+
+Problem2
+
+```{r}
+
+df_population<-readr::read_csv(here::here("data","raw","assignment23_data","raw","population_ps2.csv"))
+
+df_population %>%
+  select(city_name,prefecture_name)
+```
+Problem 3
+
+
+```{r}
+
+#logとlagの順番が逆
+
+df_population<-readr::read_csv(here::here("data","raw","assignment23_data","raw","population_ps2.csv"))
+
+df_lm<-df_population |>
+  arrange(city_name,year) |>
+  mutate(
+    change_rate = (log(population) - log(lag(population, n = 20))),
+    .by = city_id
+  ) |>
+  dplyr::filter(year == 2015)
+
+lm(change_rate ~ log(population), data = df_lm)
+```
+Problem 4
+
+```{r}
+#列名を引数とする関数を構築
+
+set.seed(111)
+df<-tibble(
+  col_1 = seq(1,10),
+  col_2 = seq(11,20) + rnorm(n = 10,0,1),
+  col_3 = seq(30,21) + rnorm(n = 10,0,1)
+)
+
+plot_column<-function(df,x,y){
+  
+  plot_col_mn <- df|>
+    ggplot(aes({{x}},{{y}})) +
+    geom_point() + 
+    theme_minimal()
+  
+  return(plot_col_mn)
+}
+
+plot_col_12<-plot_column(df, x = col_1, y = col_2)
+
+plot_col_13<-plot_column(df, x = col_1, y = col_3)
+
+plot_col_23<-plot_column(df, x = col_2, y = col_3)
+
+
+
+```
+
+Problem 5
+
+```{r}
+
+
+```
+
+Problem 6
+
+```{r}
+
+
+```
+
+Refactoring Assignment
+
+```{r}
+
+
+```
+
+
